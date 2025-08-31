@@ -1,36 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FE Parthamanunggal
 
-## Getting Started
+Frontend application untuk Parthamanunggal menggunakan Next.js 15 dengan TypeScript.
 
-First, run the development server:
+## Fitur
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Next.js 15** dengan Turbopack untuk development yang cepat
+- **TypeScript** untuk type safety
+- **Tailwind CSS v4** untuk styling
+- **Axios** untuk HTTP requests dengan fallback mechanisms
+- **Utility functions** untuk common operations
+
+## Struktur Project
+
+```
+src/
+├── app/                 # Next.js app directory
+│   ├── layout.tsx      # Root layout
+│   ├── page.tsx        # Home page
+│   └── globals.css     # Global styles
+├── lib/                # Utility libraries
+│   ├── api.ts          # API configuration dengan Axios
+│   └── utils.ts        # Common utility functions
+└── types/              # TypeScript type definitions
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Install dependencies:
+```bash
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Jalankan development server:
+```bash
+npm run dev
+```
 
-## Learn More
+3. Build untuk production:
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+## API Configuration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+File `src/lib/api.ts` berisi konfigurasi untuk API calls:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Base URL: `https://api.parthamanunggal.com`
+- Automatic Bearer token injection
+- Fallback mechanisms untuk error handling
+- Timeout 30 detik
+- CORS handling
 
-## Deploy on Vercel
+### Penggunaan API
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```typescript
+import { apiRequest } from '@/lib/api';
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+// GET request
+const data = await apiRequest<YourType>('GET', '/endpoint');
+
+// POST request
+const result = await apiRequest<ResponseType>('POST', '/endpoint', {
+  key: 'value'
+});
+```
+
+## Utility Functions
+
+File `src/lib/utils.ts` berisi utility functions:
+
+- `cn()` - Class name merging dengan Tailwind
+- `formatCurrency()` - Format currency Indonesia
+- `formatDate()` - Format tanggal Indonesia
+- `formatDateTime()` - Format tanggal dan waktu
+- `generateId()` - Generate random ID
+- `debounce()` - Debounce function
+- `throttle()` - Throttle function
+- `isEmpty()` - Check object empty
+- `deepClone()` - Deep clone object
+
+## Environment Variables
+
+Untuk development, buat file `.env.local`:
+
+```env
+NEXT_PUBLIC_API_URL=https://api.parthamanunggal.com
+NODE_ENV=development
+```
+
+## Scripts
+
+- `npm run dev` - Development server dengan Turbopack
+- `npm run build` - Build production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+## Dependencies
+
+### Production
+- Next.js 15.5.2
+- React 19.1.0
+- Axios
+- clsx
+- tailwind-merge
+
+### Development
+- TypeScript
+- ESLint
+- Tailwind CSS v4
+
+## Browser Support
+
+- Modern browsers dengan ES6+ support
+- Fallback mechanisms untuk older browsers
+
+## Contributing
+
+1. Fork repository
+2. Buat feature branch
+3. Commit changes dengan message yang jelas
+4. Push ke branch
+5. Buat Pull Request
+
+## License
+
+Private project - Parthamanunggal
