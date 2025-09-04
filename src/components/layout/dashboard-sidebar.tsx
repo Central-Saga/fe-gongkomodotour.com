@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react"; // ⬅️ tambahkan useEffect
 import {
   LayoutDashboard,
   Wallet,
@@ -71,11 +71,31 @@ export default function DashboardSidebar() {
     []
   );
 
-  // expanded state for collapsible groups
-  const [open, setOpen] = useState<Record<string, boolean>>({
-    Simpanan: true,
-    Tabungan: true,
-  });
+  // ⬇️ Tutup semua grup di awal, tapi buka otomatis kalau ada child yang aktif
+  const initialOpen = useMemo(() => {
+    const state: Record<string, boolean> = {};
+    for (const item of menu) {
+      if (item.children) {
+        state[item.label] = item.children.some((c) => isActive(pathname, c.href)) || false;
+      }
+    }
+    return state;
+  }, [menu, pathname]);
+
+  const [open, setOpen] = useState<Record<string, boolean>>(initialOpen);
+
+  // ⬇️ Saat route berubah, pastikan grup yang aktif otomatis terbuka (tanpa memaksa grup lain menutup)
+  useEffect(() => {
+    setOpen((o) => {
+      const next = { ...o };
+      for (const item of menu) {
+        if (item.children && item.children.some((c) => isActive(pathname, c.href))) {
+          next[item.label] = true;
+        }
+      }
+      return next;
+    });
+  }, [pathname, menu]);
 
   return (
     <aside className="h-screen sticky top-0 w-[248px] shrink-0 border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -148,9 +168,7 @@ function SidebarItem({
       href={href}
       className={
         "mx-2 flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors " +
-        (active
-          ? "bg-emerald-400/70 text-emerald-950 hover:bg-emerald-400"
-          : "hover:bg-muted text-foreground")
+        (active ? "bg-emerald-400/70 text-emerald-950 hover:bg-emerald-400" : "hover:bg-muted text-foreground")
       }
     >
       {Icon ? <Icon className="size-4" /> : null}
@@ -183,6 +201,8 @@ function Collapsible({
           "w-full flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-colors " +
           (active ? "bg-emerald-400/70 text-emerald-950 hover:bg-emerald-400" : "hover:bg-muted text-foreground")
         }
+        aria-expanded={open}
+        aria-controls={`section-${label}`}
       >
         <span className="flex items-center gap-3">
           {Icon ? <Icon className="size-4" /> : null}
@@ -191,7 +211,7 @@ function Collapsible({
         <ChevronDown className={`size-4 transition-transform ${open ? "rotate-180" : "rotate-0"}`} />
       </button>
       {open && (
-        <div className="mt-1 rounded-xl border bg-background shadow-sm">
+        <div id={`section-${label}`} className="mt-1 rounded-xl border bg-background shadow-sm">
           <div className="p-2 space-y-1">{children}</div>
         </div>
       )}
@@ -212,4 +232,3 @@ function SidebarLink({ href, active, children }: { href: string; active?: boolea
     </Link>
   );
 }
-
