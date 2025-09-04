@@ -1,0 +1,17 @@
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    # Uncomment to use .env values
+    # env_file:
+    #   - .env
+    # If you prefer dev mode:
+    # command: npm run dev
+    # volumes:
+    #   - .:/app
+    #   - /app/node_modules
+    #   - /app/.next
+

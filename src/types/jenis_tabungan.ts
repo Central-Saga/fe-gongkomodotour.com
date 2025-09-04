@@ -5,7 +5,8 @@
 export interface JenisTabungan {
   id: number; // bigint
   nama: string; // varchar(100)
-  aturan_bunga_json?: Record<string, any> | null; // jsonb, nullable
+  // Use unknown to avoid explicit any while allowing flexible JSON structure
+  aturan_bunga_json?: Record<string, unknown> | null; // jsonb, nullable
   deskripsi?: string | null; // text, nullable
   created_at: string; // timestamp (ISO string)
   updated_at: string; // timestamp (ISO string)
@@ -16,4 +17,3 @@ export interface ApiResponse<T> {
   message?: string;
   status: number;
 }
-
