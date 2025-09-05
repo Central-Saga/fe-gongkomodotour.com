@@ -1,13 +1,20 @@
-'use client'
+'use client';
 
-type Row = Record<string, unknown>;
+import StandardDataTable from '@/components/data/standard-data-table';
+import type { Simpanan } from '@/types/simpanan';
+import { simpananKhususColumns } from './columns';
 
-export default function SimpananKhususDataTable({ rows = [] as Row[] }: { rows?: Row[] }) {
+export default function SimpananKhususDataTable() {
   return (
-    <div className="border rounded-md p-4">
-      <div className="text-sm text-muted-foreground">Tabel simpanan khusus (placeholder)</div>
-      <pre className="text-xs mt-2 bg-muted/40 p-3 rounded-md overflow-auto">{JSON.stringify(rows, null, 2)}</pre>
-    </div>
+    <StandardDataTable<Simpanan>
+      columns={simpananKhususColumns}
+      listUrl="/api/simpanan?jenis=khusus"
+      createHref="/dashboard/simpanan/khusus/create"
+      createLabel="Tambah Simpanan Khusus"
+      onDeleteUrl={(id) => `/api/simpanan/${id}`}
+      searchPlaceholder="Cari simpanan..."
+      emptyText="Belum ada simpanan khusus"
+    />
   );
 }
 

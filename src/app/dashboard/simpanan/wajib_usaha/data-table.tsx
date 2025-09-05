@@ -1,13 +1,20 @@
-'use client'
+'use client';
 
-type Row = Record<string, unknown>;
+import StandardDataTable from '@/components/data/standard-data-table';
+import type { Simpanan } from '@/types/simpanan';
+import { simpananWajibUsahaColumns } from './columns';
 
-export default function SimpananWajibUsahaDataTable({ rows = [] as Row[] }: { rows?: Row[] }) {
+export default function SimpananWajibUsahaDataTable() {
   return (
-    <div className="border rounded-md p-4">
-      <div className="text-sm text-muted-foreground">Tabel simpanan wajib usaha (placeholder)</div>
-      <pre className="text-xs mt-2 bg-muted/40 p-3 rounded-md overflow-auto">{JSON.stringify(rows, null, 2)}</pre>
-    </div>
+    <StandardDataTable<Simpanan>
+      columns={simpananWajibUsahaColumns}
+      listUrl="/api/simpanan?jenis=wajib_usaha"
+      createHref="/dashboard/simpanan/wajib_usaha/create"
+      createLabel="Tambah Simpanan Wajib Usaha"
+      onDeleteUrl={(id) => `/api/simpanan/${id}`}
+      searchPlaceholder="Cari simpanan..."
+      emptyText="Belum ada simpanan wajib usaha"
+    />
   );
 }
 

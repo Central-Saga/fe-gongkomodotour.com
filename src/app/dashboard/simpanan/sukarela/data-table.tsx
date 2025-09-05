@@ -1,13 +1,20 @@
-'use client'
+'use client';
 
-type Row = Record<string, unknown>;
+import StandardDataTable from '@/components/data/standard-data-table';
+import type { Simpanan } from '@/types/simpanan';
+import { simpananSukarelaColumns } from './columns';
 
-export default function SimpananSukarelaDataTable({ rows = [] as Row[] }: { rows?: Row[] }) {
+export default function SimpananSukarelaDataTable() {
   return (
-    <div className="border rounded-md p-4">
-      <div className="text-sm text-muted-foreground">Tabel simpanan sukarela (placeholder)</div>
-      <pre className="text-xs mt-2 bg-muted/40 p-3 rounded-md overflow-auto">{JSON.stringify(rows, null, 2)}</pre>
-    </div>
+    <StandardDataTable<Simpanan>
+      columns={simpananSukarelaColumns}
+      listUrl="/api/simpanan?jenis=sukarela"
+      createHref="/dashboard/simpanan/sukarela/create"
+      createLabel="Tambah Simpanan Sukarela"
+      onDeleteUrl={(id) => `/api/simpanan/${id}`}
+      searchPlaceholder="Cari simpanan..."
+      emptyText="Belum ada simpanan sukarela"
+    />
   );
 }
 

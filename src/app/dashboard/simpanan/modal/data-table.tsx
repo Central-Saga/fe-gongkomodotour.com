@@ -1,13 +1,20 @@
-'use client'
+'use client';
 
-type Row = Record<string, unknown>;
+import StandardDataTable from '@/components/data/standard-data-table';
+import type { Simpanan } from '@/types/simpanan';
+import { simpananModalColumns } from './columns';
 
-export default function SimpananModalDataTable({ rows = [] as Row[] }: { rows?: Row[] }) {
+export default function SimpananModalDataTable() {
   return (
-    <div className="border rounded-md p-4">
-      <div className="text-sm text-muted-foreground">Tabel simpanan modal (placeholder)</div>
-      <pre className="text-xs mt-2 bg-muted/40 p-3 rounded-md overflow-auto">{JSON.stringify(rows, null, 2)}</pre>
-    </div>
+    <StandardDataTable<Simpanan>
+      columns={simpananModalColumns}
+      listUrl="/api/simpanan?jenis=modal"
+      createHref="/dashboard/simpanan/modal/create"
+      createLabel="Tambah Simpanan Modal"
+      onDeleteUrl={(id) => `/api/simpanan/${id}`}
+      searchPlaceholder="Cari simpanan..."
+      emptyText="Belum ada simpanan modal"
+    />
   );
 }
 

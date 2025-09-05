@@ -64,7 +64,7 @@ export default function DashboardSidebar() {
 
   const admin = useMemo<Item[]>(
     () => [
-      { label: "Users", href: "/dashboard/user", icon: Users },
+      { label: "Users", href: "/dashboard/users", icon: Users },
       { label: "Roles", href: "/dashboard/roles", icon: BadgeCheck },
       { label: "Anggota", href: "/dashboard/anggota", icon: UserPlus },
     ],

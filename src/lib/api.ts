@@ -1,9 +1,11 @@
 // lib/api.ts
 import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 
-// Untuk debugging
-const API_BASE_URL = 'https://api.parthamanunggal.com';
-console.log('API Base URL:', API_BASE_URL);
+// Base URL configurable via env with a safe fallback
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.parthamanunggal.com';
+if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
+  console.log('API Base URL:', API_BASE_URL);
+}
 
 // 1. Buat Axios instance
 const api = axios.create({
@@ -38,9 +40,11 @@ export async function apiRequest<T>(
   config?: AxiosRequestConfig
 ): Promise<T> {
   try {
-    console.log(`Making ${method} request to ${url}`);
-    console.log('Request config:', { method, url, data, config });
-    console.log('API Base URL:', API_BASE_URL);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`Making ${method} request to ${url}`);
+      console.log('Request config:', { method, url, data, config });
+      console.log('API Base URL:', API_BASE_URL);
+    }
     
     const response = await api({
       method,
@@ -48,8 +52,10 @@ export async function apiRequest<T>(
       data,
       ...config,
     });
-    console.log(`Successful response from ${url}`, response.status);
-    console.log('Response data:', response.data);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`Successful response from ${url}`, response.status);
+      console.log('Response data:', response.data);
+    }
     return response.data;
   } catch (error: unknown) {
     const axiosError = error as { 
@@ -57,18 +63,24 @@ export async function apiRequest<T>(
       response?: { status?: number }; 
       config?: unknown 
     };
-    console.error(`Error in apiRequest to ${url}:`, axiosError.message || 'Unknown error');
-    console.error('Full error object:', error);
-    console.error('Error response:', axiosError.response);
-    console.error('Error config:', axiosError.config);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(`Error in apiRequest to ${url}:`, axiosError.message || 'Unknown error');
+      console.error('Full error object:', error);
+      console.error('Error response:', axiosError.response);
+      console.error('Error config:', axiosError.config);
+    }
     
     // If we get a 500 error, try alternative approaches
     if (axiosError.response?.status === 500) {
-      console.log('Received 500 error, trying alternative approaches...');
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Received 500 error, trying alternative approaches...');
+      }
       
       // Try 1: Direct fetch without axios
       try {
-        console.log('Attempting direct fetch...');
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('Attempting direct fetch...');
+        }
         const fullUrl = `${API_BASE_URL}${url}`;
         const fetchResponse = await fetch(fullUrl, {
           method,
@@ -81,18 +93,26 @@ export async function apiRequest<T>(
         
         if (fetchResponse.ok) {
           const fetchData = await fetchResponse.json();
-          console.log('Direct fetch successful:', fetchData);
-          return fetchData as T;
-        } else {
-          console.error('Direct fetch failed:', fetchResponse.status, fetchResponse.statusText);
+          if (process.env.NODE_ENV !== 'production') {
+            console.log('Direct fetch successful:', fetchData);
+          }
+        return fetchData as T;
+      } else {
+          if (process.env.NODE_ENV !== 'production') {
+            console.error('Direct fetch failed:', fetchResponse.status, fetchResponse.statusText);
+          }
         }
       } catch (fetchError) {
-        console.error('Direct fetch error:', fetchError);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Direct fetch error:', fetchError);
+        }
       }
       
       // Try 2: XHR fallback
       if (method === 'GET') {
-        console.log('Attempting XHR fallback...');
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('Attempting XHR fallback...');
+        }
         return new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
           const fullUrl = `${API_BASE_URL}${url}`;
@@ -108,7 +128,9 @@ export async function apiRequest<T>(
             if (xhr.status >= 200 && xhr.status < 300) {
               try {
                 const response = JSON.parse(xhr.responseText);
-                console.log('XHR fallback successful', response);
+                if (process.env.NODE_ENV !== 'production') {
+                  console.log('XHR fallback successful', response);
+                }
                 resolve(response as T);
               } catch (e) {
                 reject(new Error(`JSON parse error: ${e}`));
@@ -134,7 +156,9 @@ export async function apiRequest<T>(
     
     // If axios fails and no fallback worked, try with native fetch as fallback
     if (!axiosError.response && method === 'GET') {
-      console.log('Attempting fallback with XHR');
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Attempting fallback with XHR');
+      }
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         const fullUrl = `${API_BASE_URL}${url}`;
@@ -161,8 +185,10 @@ export async function apiRequest<T>(
         };
         
         xhr.onerror = function() {
-          console.error('XHR error occurred');
-          reject(new Error('Network error occurred'));
+            if (process.env.NODE_ENV !== 'production') {
+              console.error('XHR error occurred');
+            }
+            reject(new Error('Network error occurred'));
         };
         
         xhr.ontimeout = function() {

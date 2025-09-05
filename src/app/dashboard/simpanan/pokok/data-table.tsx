@@ -1,13 +1,20 @@
-'use client'
+'use client';
 
-type Row = Record<string, unknown>;
+import StandardDataTable from '@/components/data/standard-data-table';
+import type { Simpanan } from '@/types/simpanan';
+import { simpananPokokColumns } from './columns';
 
-export default function SimpananPokokDataTable({ rows = [] as Row[] }: { rows?: Row[] }) {
+export default function SimpananPokokDataTable() {
   return (
-    <div className="border rounded-md p-4">
-      <div className="text-sm text-muted-foreground">Tabel simpanan pokok (placeholder)</div>
-      <pre className="text-xs mt-2 bg-muted/40 p-3 rounded-md overflow-auto">{JSON.stringify(rows, null, 2)}</pre>
-    </div>
+    <StandardDataTable<Simpanan>
+      columns={simpananPokokColumns}
+      listUrl="/api/simpanan?jenis=pokok"
+      createHref="/dashboard/simpanan/pokok/create"
+      createLabel="Tambah Simpanan Pokok"
+      onDeleteUrl={(id) => `/api/simpanan/${id}`}
+      searchPlaceholder="Cari simpanan..."
+      emptyText="Belum ada simpanan pokok"
+    />
   );
 }
 
