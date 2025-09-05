@@ -1,13 +1,19 @@
-'use client'
+'use client';
 
-type Row = Record<string, unknown>;
+import StandardDataTable from '@/components/data/standard-data-table';
+import type { Tabungan } from '@/types/tabungan';
+import { tabunganBerjangkaColumns } from './columns';
 
-export default function TabunganBerjangkaDataTable({ rows = [] as Row[] }: { rows?: Row[] }) {
+export default function TabunganBerjangkaDataTable() {
   return (
-    <div className="border rounded-md p-4">
-      <div className="text-sm text-muted-foreground">Tabel tabungan berjangka (placeholder)</div>
-      <pre className="text-xs mt-2 bg-muted/40 p-3 rounded-md overflow-auto">{JSON.stringify(rows, null, 2)}</pre>
-    </div>
+    <StandardDataTable<Tabungan>
+      columns={tabunganBerjangkaColumns}
+      listUrl="/api/tabungan?jenis=berjangka"
+      createHref="/dashboard/tabungan/berjangka/create"
+      createLabel="Tambah Tabungan Berjangka"
+      searchPlaceholder="Cari tabungan..."
+      emptyText="Belum ada tabungan berjangka"
+    />
   );
 }
 

@@ -1,13 +1,19 @@
-'use client'
+'use client';
 
-type Row = Record<string, unknown>;
+import StandardDataTable from '@/components/data/standard-data-table';
+import type { Tabungan } from '@/types/tabungan';
+import { tabunganHarianColumns } from './columns';
 
-export default function TabunganHarianDataTable({ rows = [] as Row[] }: { rows?: Row[] }) {
+export default function TabunganHarianDataTable() {
   return (
-    <div className="border rounded-md p-4">
-      <div className="text-sm text-muted-foreground">Tabel tabungan harian (placeholder)</div>
-      <pre className="text-xs mt-2 bg-muted/40 p-3 rounded-md overflow-auto">{JSON.stringify(rows, null, 2)}</pre>
-    </div>
+    <StandardDataTable<Tabungan>
+      columns={tabunganHarianColumns}
+      listUrl="/api/tabungan?jenis=harian"
+      createHref="/dashboard/tabungan/harian/create"
+      createLabel="Tambah Tabungan Harian"
+      searchPlaceholder="Cari tabungan..."
+      emptyText="Belum ada tabungan harian"
+    />
   );
 }
 

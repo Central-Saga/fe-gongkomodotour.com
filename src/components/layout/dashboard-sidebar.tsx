@@ -25,7 +25,8 @@ type Item = {
 function isActive(pathname: string, href?: string) {
   if (!href) return false;
   if (href === "/dashboard") return pathname === "/dashboard";
-  return pathname.startsWith(href);
+  // Match full segment to avoid '/wajib' matching '/wajib_usaha'
+  return pathname === href || pathname.startsWith(href + "/");
 }
 
 export default function DashboardSidebar() {
